@@ -1,0 +1,51 @@
+# ===================================================================
+# ARQUIVOS DE CONFIGURAÇÃO E SENHAS DA APLICAÇÃO (SEGURANÇA)
+# ===================================================================
+/config-secret/
+/secrets/
+/credenciais/
+*.env
+*.pem
+*.key
+
+# Propriedades de ambiente local com senhas reais do MySQL ou Gemini
+application-local.properties
+application-dev.properties
+application-secrets.properties
+
+# ===================================================================
+# BUILD E COMPILAÇÃO JAVA / MAVEN
+# ===================================================================
+target/
+*.class
+*.jar
+*.war
+*.ear
+*.rar
+
+# Logs da aplicação
+*.log
+
+# ===================================================================
+# IDE: INTELLIJ IDEA
+# ===================================================================
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+
+# ===================================================================
+# IDEs ALTERNATIVAS (Eclipse, VS Code, NetBeans)
+# ===================================================================
+.vscode/
+.classpath
+.project
+.settings/
+bin/
+
+# ===================================================================
+# SISTEMA OPERACIONAL
+# ===================================================================
+.DS_Store
+Thumbs.db
