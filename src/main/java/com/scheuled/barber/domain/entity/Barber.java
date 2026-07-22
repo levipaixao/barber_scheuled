@@ -1,4 +1,4 @@
-package com.scheuled.barber.domain.barber;
+package com.scheuled.barber.domain.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

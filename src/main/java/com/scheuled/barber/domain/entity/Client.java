@@ -1,14 +1,12 @@
-package com.scheuled.barber.domain.client;
+package com.scheuled.barber.domain.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@Table(name = "Clients")
 @Entity(name = "Client")
 @AllArgsConstructor
 @NoArgsConstructor
