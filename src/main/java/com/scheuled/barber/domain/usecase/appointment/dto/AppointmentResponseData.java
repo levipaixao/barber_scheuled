@@ -1,4 +1,4 @@
-package com.scheuled.barber.dto.appointment;
+package com.scheuled.barber.domain.usecase.appointment.dto;
 
 import com.scheuled.barber.domain.entity.Appointment;
 import com.scheuled.barber.domain.enums.AppointmentStatus;

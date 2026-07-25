@@ -1,4 +1,4 @@
-package com.scheuled.barber.dto.barber;
+package com.scheuled.barber.domain.usecase.barber;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

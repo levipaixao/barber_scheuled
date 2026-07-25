@@ -1,4 +1,4 @@
-package com.scheuled.barber.dto.appointment;
+package com.scheuled.barber.domain.usecase.appointment.dto;
 
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotNull;

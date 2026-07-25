@@ -1,4 +1,4 @@
-package com.scheuled.barber.repository;
+package com.scheuled.barber.infra.persistence.repository;
 
 import com.scheuled.barber.domain.entity.Barber;
 import org.springframework.data.jpa.repository.JpaRepository;

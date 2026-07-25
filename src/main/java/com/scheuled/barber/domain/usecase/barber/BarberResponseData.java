@@ -1,4 +1,4 @@
-package com.scheuled.barber.dto.barber;
+package com.scheuled.barber.domain.usecase.barber;
 
 import com.scheuled.barber.domain.entity.Barber;
 
