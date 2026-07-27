@@ -8,24 +8,21 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface AppointmentRepository extends JpaRepository<Appointment, Long> {
 
-    // Verifica se já existe um agendamento do barbeiro exatamente no mesmo horário
-    boolean existsByBarberIdAndAppointmentDateTime(Long barberId, LocalDateTime dateTime);
+    @Query("""
+        SELECT a FROM Appointment a 
+        WHERE a.client.id = :clientId 
+          AND a.status <> 'CANCELED'
+        ORDER BY a.startAt DESC
+        LIMIT 1
+    """)
+    Optional<Appointment> findLastActiveAppointmentByClient(@Param("clientId") Long clientId);
 
-    // Busca agendamentos de um cliente dentro de um intervalo de datas (Útil para a regra do limite semanal / 7 dias)
-    @Query("SELECT a FROM Appointment a WHERE a.client.id = :clientId AND a.appointmentDateTime BETWEEN :start AND :end")
-    List<Appointment> findAppointmentsByClientInPeriod(
-            @Param("clientId") Long clientId,
-            @Param("start") LocalDateTime start,
-            @Param("end") LocalDateTime end
-    );
 
-    // Retorna o último agendamento realizado por um determinado cliente
-    @Query("SELECT a FROM Appointment a WHERE a.client.id = :clientId ORDER BY a.appointmentDateTime DESC LIMIT 1")
-    Appointment findLastAppointmentByClient(@Param("clientId") Long clientId);
 
     // Busca todos os agendamentos ativos de um barbeiro em um determinado dia
     @Query("""
@@ -40,5 +37,18 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
             @Param("barberId") Long barberId,
             @Param("startOfDay") LocalDateTime startOfDay,
             @Param("endOfDay") LocalDateTime endOfDay
+    );
+
+    @Query("""
+        SELECT COUNT(a) > 0 FROM Appointment a
+        WHERE a.barber.id = :barberId
+          AND a.status <> 'CANCELED'
+          AND :startAt < a.endAt
+          AND :endAt > a.startAt
+    """)
+    boolean hasScheduleConflict(
+            @Param("barberId") Long barberId,
+            @Param("startAt") LocalDateTime startAt,
+            @Param("endAt") LocalDateTime endAt
     );
 }
