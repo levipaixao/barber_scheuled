@@ -26,4 +26,19 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
     // Retorna o último agendamento realizado por um determinado cliente
     @Query("SELECT a FROM Appointment a WHERE a.client.id = :clientId ORDER BY a.appointmentDateTime DESC LIMIT 1")
     Appointment findLastAppointmentByClient(@Param("clientId") Long clientId);
+
+    // Busca todos os agendamentos ativos de um barbeiro em um determinado dia
+    @Query("""
+    SELECT a FROM Appointment a 
+    WHERE a.barber.id = :barberId 
+      AND a.status <> 'CANCELED'
+      AND a.startAt >= :startOfDay 
+      AND a.startAt < :endOfDay
+    ORDER BY a.startAt ASC
+""")
+    List<Appointment> findActiveAppointmentsByBarberAndDate(
+            @Param("barberId") Long barberId,
+            @Param("startOfDay") LocalDateTime startOfDay,
+            @Param("endOfDay") LocalDateTime endOfDay
+    );
 }
