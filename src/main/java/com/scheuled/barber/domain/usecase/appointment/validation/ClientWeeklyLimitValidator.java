@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Component
 public class ClientWeeklyLimitValidator implements AppointmentValidator{
@@ -18,12 +19,12 @@ public class ClientWeeklyLimitValidator implements AppointmentValidator{
     @Override
     public void appointmentValidator(AppointmentRequestData data) {
 
-        Appointment lastAppointment = appointmentRepository.findLastAppointmentByClient(data.clientId());
+        Optional<Appointment> lastAppointment = appointmentRepository.findLastAppointmentByClient(data.clientId());
 
-        if (lastAppointment != null){
-            LocalDateTime nextAllowedDate = lastAppointment.getStart_at().plusDays(7);
+        if (lastAppointment.isPresent()){
+            LocalDateTime nextAllowedDate = lastAppointment.get().getStart_at().plusDays(7);
 
-            if (data.startAt().isBefore(nextAllowedDate)){
+            if (data.start_at().isBefore(nextAllowedDate)){
                 throw new ValidationException(
                         "O cliente só pode agendar um novo serviço após 7 dias do último agendamento. " +
                         "Próxima data disponível a partir de: " +  nextAllowedDate.toLocalDate());

@@ -10,6 +10,7 @@ import com.scheuled.barber.infra.persistence.repository.AppointmentRepository;
 import com.scheuled.barber.infra.persistence.repository.BarberRepository;
 import com.scheuled.barber.infra.persistence.repository.ServiceOfferingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -17,6 +18,7 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
+@Service
 public class GetAvailableSlotsUseCase {
 
     private static final LocalTime OPENING_TIME = LocalTime.of(8, 0);  // 08:00

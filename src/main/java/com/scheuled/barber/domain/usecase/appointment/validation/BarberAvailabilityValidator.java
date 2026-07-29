@@ -24,11 +24,11 @@ public class BarberAvailabilityValidator implements AppointmentValidator{
         var service = serviceRepository.findById(data.serviceId())
                 .orElseThrow(() -> new ValidationException("Serviço não encontrado"));
 
-        LocalDateTime endAt = data.startAt().plusMinutes(service.getDurationMinutes());
+        LocalDateTime endAt = data.start_at().plusMinutes(service.getDurationMinutes());
 
         boolean hasConflict = appointmentRepository.hasScheduleConflict(
                 data.serviceId(),
-                data.startAt(),
+                data.start_at(),
                 endAt
         );
 

@@ -57,13 +57,13 @@ public class ScheduleAppointmentUseCase {
         validators.forEach(v -> v.appointmentValidator(data));
 
         // Calcular horário de término (startAt + duração em minutos do serviço)
-        LocalDateTime endAt = data.startAt().plusMinutes(service.getDurationMinutes());
+        LocalDateTime endAt = data.start_at().plusMinutes(service.getDurationMinutes());
 
         Appointment appointment = new Appointment(
                 client,
                 barber,
                 service,
-                data.startAt(),
+                data.start_at(),
                 endAt
         );
 

@@ -13,6 +13,24 @@ CREATE TABLE clients (
                          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE services (
+                          id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                          name VARCHAR(100) NOT NULL,
+                          price DECIMAL(10, 2) NOT NULL,
+                          duration_minutes INT NOT NULL,
+                          active BOOLEAN DEFAULT TRUE
+);
+
+CREATE TABLE barber_services (
+                                 id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                                 barber_id BIGINT NOT NULL,
+                                 service_id BIGINT NOT NULL,
+
+                                 CONSTRAINT uk_barber_service UNIQUE (barber_id, service_id),
+                                 CONSTRAINT fk_barber_service_barber FOREIGN KEY (barber_id) REFERENCES barbers(id),
+                                 CONSTRAINT fk_barber_service_service FOREIGN KEY (service_id) REFERENCES services(id)
+);
+
 CREATE TABLE appointments (
                               id BIGINT AUTO_INCREMENT PRIMARY KEY,
                               client_id BIGINT NOT NULL,
@@ -28,12 +46,4 @@ CREATE TABLE appointments (
                               CONSTRAINT fk_appointment_client FOREIGN KEY (client_id) REFERENCES clients(id),
                               CONSTRAINT fk_appointment_barber FOREIGN KEY (barber_id) REFERENCES barbers(id),
                               CONSTRAINT fk_appointment_service FOREIGN KEY (service_id) REFERENCES services(id)
-);
-
-CREATE TABLE services (
-                          id BIGINT AUTO_INCREMENT PRIMARY KEY,
-                          name VARCHAR(100) NOT NULL,
-                          price DECIMAL(10, 2) NOT NULL,
-                          duration_minutes INT NOT NULL,
-                          active BOOLEAN DEFAULT TRUE
 );

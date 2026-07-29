@@ -18,6 +18,6 @@ public record AppointmentRequestData(
 
         @NotNull(message = "A data e hora de início são obrigatórias")
         @Future(message = "A data do agendamento deve ser no futuro")
-        LocalDateTime startAt
+        LocalDateTime start_at
 ) {
 }

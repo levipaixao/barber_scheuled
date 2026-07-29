@@ -10,7 +10,7 @@ public record AppointmentResponseData(
         String clientName,
         String barberName,
         String serviceName,
-        LocalDateTime startAt,
+        LocalDateTime start_at,
         LocalDateTime endAt,
         AppointmentStatus status,
         String googleEventId
