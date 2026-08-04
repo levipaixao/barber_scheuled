@@ -1,5 +1,7 @@
 package com.scheuled.barber.domain.usecase.appointment.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotNull;
 
@@ -18,6 +20,8 @@ public record AppointmentRequestData(
 
         @NotNull(message = "A data e hora de início são obrigatórias")
         @Future(message = "A data do agendamento deve ser no futuro")
+        @JsonProperty("start_at")
+        @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
         LocalDateTime start_at
 ) {
 }

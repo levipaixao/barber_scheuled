@@ -36,13 +36,14 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
             @Param("endOfDay") LocalDateTime endOfDay
     );
 
-    @Query(value = """
-        SELECT COUNT(*) > 0 FROM appointments a
-        WHERE a.barber_id = :barberId
-          AND a.status <> 'CANCELED'
+    @Query("""
+        SELECT CASE WHEN COUNT(a) > 0 THEN true ELSE false END 
+        FROM Appointment a
+        WHERE a.barber.id = :barberId
+          AND a.status <> com.scheuled.barber.domain.enums.AppointmentStatus.CANCELED
           AND a.start_at < :endAt
           AND a.end_at > :startAt
-    """, nativeQuery = true)
+    """)
     boolean hasScheduleConflict(
             @Param("barberId") Long barberId,
             @Param("startAt") LocalDateTime startAt,

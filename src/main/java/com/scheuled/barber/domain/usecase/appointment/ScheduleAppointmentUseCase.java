@@ -67,6 +67,8 @@ public class ScheduleAppointmentUseCase {
                 endAt
         );
 
+        appointment = appointmentRepository.save(appointment);
+
         return new AppointmentResponseData(appointment);
     }
 }

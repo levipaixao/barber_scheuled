@@ -27,7 +27,7 @@ public class BarberAvailabilityValidator implements AppointmentValidator{
         LocalDateTime endAt = data.start_at().plusMinutes(service.getDurationMinutes());
 
         boolean hasConflict = appointmentRepository.hasScheduleConflict(
-                data.serviceId(),
+                data.barberId(),
                 data.start_at(),
                 endAt
         );
