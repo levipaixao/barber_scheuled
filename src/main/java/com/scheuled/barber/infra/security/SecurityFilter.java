@@ -26,22 +26,24 @@ public class SecurityFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
-        // 1. Extrai o token do cabeçalho "Authorization" da requisição
         var tokenJWT = recoverToken(request);
 
-        // 2. Se o token estiver presente, valida e autentica a requisição no Spring Security
         if (tokenJWT != null) {
-            var subject = tokenService.getSubject(tokenJWT);
-            var user = userRepository.findByLogin(subject);
+            try {
+                var subject = tokenService.getSubject(tokenJWT);
+                var user = userRepository.findByLogin(subject);
 
-            if (user != null) {
-                // Força a autenticação do usuário no contexto da requisição atual
-                var authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
-                SecurityContextHolder.getContext().setAuthentication(authentication);
+                if (user != null) {
+                    var authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                }
+            } catch (Exception e) {
+                // Se o token for inválido/expirado, apenas limpa o contexto e não trava a requisição
+                SecurityContextHolder.clearContext();
             }
         }
 
-        // 3. Continua a execução do fluxo da requisição (para chegar nos Controllers)
+        // Continua a cadeia de filtros SEMPRE
         filterChain.doFilter(request, response);
     }
 

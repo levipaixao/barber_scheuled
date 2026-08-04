@@ -24,25 +24,14 @@ public class SecurityConfigurations {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
-                // 1. Desabilita CSRF pois a API é Stateless e usa Tokens Bearer no Header
                 .csrf(csrf -> csrf.disable())
-
-                // 2. Define o gerenciamento de sessão como STATELESS (sem guardar estado no servidor)
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-
-                // 3. Regras de autorização por endpoint
                 .authorizeHttpRequests(req -> {
-                    // Endpoint público para autenticação
+                    req.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll(); // Libera Pre-flight CORS
                     req.requestMatchers(HttpMethod.POST, "/login").permitAll();
-
-                    // Endpoint público para consulta de disponibilidade (útil para o Agente de IA consultar agenda livre)
                     req.requestMatchers(HttpMethod.GET, "/appointments/availability").permitAll();
-
-                    // Qualquer outra requisição (criar agendamento, cadastrar barbeiro, etc.) exige Token JWT
                     req.anyRequest().authenticated();
                 })
-
-                // 4. Registra nosso filtro customizado ANTES do filtro padrão do Spring Security
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }

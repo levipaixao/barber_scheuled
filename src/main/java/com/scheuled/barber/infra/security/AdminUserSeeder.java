@@ -18,14 +18,19 @@ public class AdminUserSeeder implements CommandLineRunner {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @Value("${api.security.admin.login:}")
+    @Value("${api.security.admin.login}")
     private String adminLogin;
 
-    @Value("${api.security.admin.password:}")
+    @Value("${api.security.admin.password}")
     private String adminPassword;
 
     @Override
     public void run(String... args) {
+        if (adminLogin == null || adminLogin.isBlank()) {
+            System.err.println(">>> [SECURITY ERROR] Variável ADMIN_LOGIN não foi carregada corretamente!");
+            return;
+        }
+
         if (userRepository.findByLogin(adminLogin) == null) {
             var admin = new User(
                     null,
@@ -34,7 +39,9 @@ public class AdminUserSeeder implements CommandLineRunner {
                     UserRole.ADMIN
             );
             userRepository.save(admin);
-            System.out.println(">>> [SECURITY] Usuário admin inicial verificado/criado com sucesso!");
+            System.out.println(">>> [SECURITY] Usuário admin '" + adminLogin + "' criado com sucesso!");
+        } else {
+            System.out.println(">>> [SECURITY] Usuário admin '" + adminLogin + "' já existe no banco.");
         }
     }
 }
