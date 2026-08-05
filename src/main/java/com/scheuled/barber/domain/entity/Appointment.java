@@ -74,4 +74,8 @@ public class Appointment {
     public void cancel() {
         this.status = AppointmentStatus.CANCELED;
     }
+
+    public void updateGoogleEventId(String googleEventId) {
+        this.googleEventId = googleEventId;
+    }
 }

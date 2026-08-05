@@ -5,6 +5,7 @@ import com.scheuled.barber.domain.entity.Barber;
 import com.scheuled.barber.domain.entity.Client;
 import com.scheuled.barber.domain.entity.ServiceOffering;
 import com.scheuled.barber.domain.exception.ValidationException;
+import com.scheuled.barber.domain.gateway.CalendarGateway;
 import com.scheuled.barber.domain.usecase.appointment.dto.AppointmentRequestData;
 import com.scheuled.barber.domain.usecase.appointment.dto.AppointmentResponseData;
 import com.scheuled.barber.domain.usecase.appointment.validation.AppointmentValidator;
@@ -37,8 +38,11 @@ public class ScheduleAppointmentUseCase {
     @Autowired
     private List<AppointmentValidator> validators;
 
+    @Autowired
+    private CalendarGateway calendarGateway;
+
     @Transactional
-    public AppointmentResponseData execute (AppointmentRequestData data){
+    public AppointmentResponseData execute(AppointmentRequestData data) {
 
         Client client = clientRepository.findById(data.clientId())
                 .orElseThrow(() -> new ValidationException("Cliente informado não foi encontrado."));
@@ -46,17 +50,15 @@ public class ScheduleAppointmentUseCase {
         Barber barber = barberRepository.findById(data.barberId())
                 .orElseThrow(() -> new ValidationException("Barbeiro informado não foi encontrado."));
 
-        if (!barber.getActive()){
+        if (!barber.getActive()) {
             throw new ValidationException("O barbeiro selecionado está inativo.");
         }
 
         ServiceOffering service = serviceOfferingRepository.findById(data.serviceId())
                 .orElseThrow(() -> new ValidationException("Serviço informado não foi encontrado."));
 
-        // Executar todas as regras de negócio / validações injetadas no Spring
         validators.forEach(v -> v.appointmentValidator(data));
 
-        // Calcular horário de término (startAt + duração em minutos do serviço)
         LocalDateTime endAt = data.start_at().plusMinutes(service.getDurationMinutes());
 
         Appointment appointment = new Appointment(
@@ -68,6 +70,13 @@ public class ScheduleAppointmentUseCase {
         );
 
         appointment = appointmentRepository.save(appointment);
+
+        // Integração com o Google Calendar
+        String googleEventId = calendarGateway.createEvent(appointment);
+        if (googleEventId != null) {
+            appointment.updateGoogleEventId(googleEventId);
+            appointment = appointmentRepository.save(appointment); // Atualiza com o ID do evento retornado
+        }
 
         return new AppointmentResponseData(appointment);
     }
